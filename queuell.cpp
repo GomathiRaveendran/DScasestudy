@@ -1,6 +1,8 @@
 #include <iostream>
 #include<string>
 #include <sstream>
+#include <vector>
+#include <iterator>
 using namespace std;
 
 template<class E>
@@ -8,9 +10,6 @@ class QueueLL {
 private:
 	
 	E *queue;
-	Node *head;
-	Node *tail;
-	int sz;
 	
 	class Node
 	{
@@ -23,7 +22,10 @@ private:
 				element = elt;
 				next = NULL;
 			}
-	}
+	};
+	Node *head;
+	Node *tail;
+	int sz;
 	
 public:
 	QueueLL(){
@@ -39,8 +41,8 @@ public:
 		return (sz==0);
 	}
 
-	void enqueue(E& elt){
-		Node t(elt);
+	void enqueue(E elt){
+		Node *t = new Node(elt);
 		if(sz==0)
 		{
 			head = t;
@@ -55,23 +57,46 @@ public:
 	}
 
 	E dequeue(){
-    if(sz==0)
-    {
-    cout<<"List Empty"<<endl;
-    }
+		if(sz==0)
+	    {
+	    cout<<"Queue Empty Exception"<<endl<<"None"<<endl;
+	    return -1;
+	    }
+	   E x;
+	    
+	    if(sz==1)
+	    {
+	    x = head -> element;
+	    head = NULL;
+	    tail = NULL;
+	    sz--;
+	    cout<<x<<endl;
+	    return x;
+	    
+	    }
+		x = head -> element;
+	   	head = head -> next;
+	   	sz--;	
+	   	cout<<x<<endl;
+	   	return x;
     
 	}
 
-	E front(){
-		
+	E first(){
+		return head -> element;
 	}
 	void displayQueue(){
-		if isEmpty(){
-			cout<< "Empty";
+		if (isEmpty()){
+			cout<< "Queue Empty"<<endl;
 		}
 		else{
 			
-			
+			Node *t = head;
+			while(t!=NULL)
+			{
+				cout<<t->element<<" ";
+				t = t -> next;
+			}
 			cout << endl;
 			return;
 		}
@@ -82,12 +107,10 @@ void getInput(string const &inputStr,vector<string> &myOutput)
 {
     stringstream ss(inputStr);
     string st ="";
-    while (getline(ss, st, ' ')) 
-	{
+    while (getline(ss, st, ' ')) {
         myOutput.push_back(st);
     }
 }
-
 char trim(string str) 
 { 
    return str[0];
@@ -132,3 +155,5 @@ int main(){
  	    }
  	}
 }
+
+
