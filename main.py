@@ -1,3 +1,5 @@
+# SAMPLE CRYPTOCURRENCY USING BLOCKCHAIN
+# referenced from https://github.com/Savjee/SavjeeCoin and https://github.com/droid76/Merkle-Tree
 import hashlib
 import datetime
 from datetime import date
