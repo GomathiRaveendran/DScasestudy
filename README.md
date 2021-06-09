@@ -2,6 +2,6 @@
 
 implementation of a blockchain with merkle tree.
 
-references:
+references: </br>
   https://github.com/Savjee/SavjeeCoin  
   https://github.com/droid76/Merkle-Tree
