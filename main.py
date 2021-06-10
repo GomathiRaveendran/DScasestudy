@@ -1,8 +1,9 @@
 # SAMPLE CRYPTOCURRENCY USING BLOCKCHAIN
 # referenced from https://github.com/Savjee/SavjeeCoin and https://github.com/droid76/Merkle-Tree
+
 import hashlib
 import datetime
-from datetime import date
+from datetime import datetime
     
 class MerkleTreeNode:
     def __init__(self,value):
@@ -56,7 +57,7 @@ class Block:
         self.transaction = transaction
         self.merkinp = ''
         for i in transaction:
-            self.merkinp = self.merkinp+i.fromad+','+i.toad+','+i.amt
+            self.merkinp = self.merkinp+i.fromad+','+i.toad+','+i.amt+','
 
         self.roothash = buildTree(self.merkinp.split(",")).hashValue
         self.previousHash = previousHash
@@ -64,7 +65,7 @@ class Block:
         
 
     def calculateHash(self):
-        res = self.roothash+str(self.nonce)
+        res = self.roothash+str(self.nonce)+str(self.timestamp)
         res = hashlib.sha256(res.encode())
         return res.hexdigest()
 
@@ -80,13 +81,21 @@ class Block:
 
 class Blockchain:
     def __init__(self):
-        self.chain = [self.createGenesisBlock()]
-        self.difficulty = 5
+        self.difficulty = 3
         self.pendingTransactions = []
         self.miningReward = "100"
+        self.chain = [self.createGenesisBlock()]
+        
 
     def createGenesisBlock(self):
-        return Block(date.today(),[Transaction("sender","reciever","0")], "0")
+        ret = Block(datetime.now().strftime("%d/%m/%Y %H:%M:%S"),[Transaction("sender","reciever","0")], "0")
+        print("Genesis Block being created...please hold on")
+        print("----------------------------------------------------")
+        ret.mineBlock(self.difficulty)
+        print("Block successfully mined!")
+        self.pendingTransactions.append(Transaction("null","0",self.miningReward))
+        print("----------------------------------------------------")
+        return ret
 
     def getLatestBlock(self):
         return self.chain[len(self.chain)-1]
@@ -96,7 +105,8 @@ class Blockchain:
     #     v.mineBlock(self.difficulty)
     #     self.chain.append(v)
 
-    def minePendingTransactions(self,mineradd,timestamp=date.today()):
+    def minePendingTransactions(self,mineradd,timestamp=datetime.now().strftime("%d/%m/%Y %H:%M:%S")):
+        print("----------------------------------------------------")
         if(len(self.pendingTransactions)>3):
             send=self.pendingTransactions[0:3]
             self.pendingTransactions=self.pendingTransactions[3:]
@@ -108,6 +118,7 @@ class Blockchain:
         print("Block successfully mined!")
         self.chain.append(v)
         self.pendingTransactions.append(Transaction("null",mineradd,self.miningReward))
+        print("----------------------------------------------------")
 
     def isChainValid(self):
         for i in range(1, len(self.chain)):
@@ -140,22 +151,27 @@ def main():
         print("EXIT - enter 0")
         print("MORE TRANSACTION - enter 1")
         c = int(input())
-
+        t+=1
+    print("Your transactions are being added to the blockchain...please wait")
     while len(ccoin.pendingTransactions)>1:
         ccoin.minePendingTransactions("miner01")
     # ccoin.addBlock( Block("01/02/2020", "amount: 4") )
     # ccoin.addBlock( Block("01/03/2020", "amount: 16") )
-
+    i=0
     for x in ccoin.chain:
-        print(x.timestamp)
-        print(x.merkinp)
-        print(x.hash)
-        print("previous hash:")
-        print(x.previousHash)
+        print("Block #",i,": ")
+        print("Timestamp:", x.timestamp)
+        print("Transactions stored in block",i,":",x.merkinp)
+        print("Hash: ",x.hash)
+        print("previous hash:", x.previousHash)
+        i=i+1
     # to tamper with the chain, uncomment below line of code.
     # ccoin.chain[1].transaction="amount: 10" 
+    print("----------------------------------------------------")
     print("coin validity:")
     print(ccoin.isChainValid())
+    print("Transactions recorded!")
+    print("----------------------------------------------------")
 
 if __name__ == '__main__':
     main()
